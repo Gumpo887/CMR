@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión de Pedidos</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="main-container">
+    <!-- FORMULARIO -->
+    <div class="formulario">
+      <h1>Nuevo encargo</h1>
+      <form id="encargo-form">
+        <div class="form-group">
+          <label for="diaMes">Fecha del pedido (día/mes/año)</label>
+          <input type="date" id="diaMes" required />
+        </div>
+
+        <div class="form-group">
+          <label for="tienda">Tienda</label>
+          <select id="tienda" required>
+            <option value="">Selecciona una tienda</option>
+            <option>Martínez del Campo</option>
+            <option>Calle Vitoria</option>
+            <option>Hospital Universitario</option>
+            <option>Aranda</option>
+            <option>Centro de jardinería</option>
+          </select>
+        </div>
+
+        <div class="form-group"><label>Empleado</label><input type="text" id="empleado" required /></div>
+        <div class="form-group"><label>Cliente</label><input type="text" id="cliente" required /></div>
+        <div class="form-group"><label>Estado</label><input type="text" id="estado" required /></div>
+        <div class="form-group"><label>Teléfono</label><input type="tel" id="telefono" required /></div>
+        <div class="form-group"><label>Nombre</label><input type="text" id="nombre" required /></div>
+        <div class="form-group"><label>Dirección</label><input type="text" id="direccion" required /></div>
+        <div class="form-group"><label>Encargo</label><textarea id="encargo" rows="2" required></textarea></div>
+        <div class="form-group"><label>Observaciones</label><textarea id="observaciones" rows="2"></textarea></div>
+
+        <button type="submit">Guardar encargo</button>
+        <p id="respuesta" class="mensaje-respuesta"></p>
+      </form>
+    </div>
+
+    <!-- TABLA -->
+    <div class="tabla">
+      <h2>Pedidos registrados</h2>
+      <table id="tablaPedidos">
+        <thead>
+          <tr>
+            <th>Fecha</th><th>Tienda</th><th>Empleado</th><th>Cliente</th>
+            <th>Estado</th><th>Teléfono</th><th>Nombre</th>
+            <th>Dirección</th><th>Encargo</th><th>Observaciones</th><th>Acción</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
