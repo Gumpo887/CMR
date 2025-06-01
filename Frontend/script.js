@@ -2,21 +2,10 @@ function defaultSubmit(e) {
   e.preventDefault();
   const datos = getDatosFormulario();
 
-  fetch("http://localhost:8080/api/encargos", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(datos),
-  })
-    .then(res => res.ok ? res.json() : Promise.reject("Error del servidor"))
-    .then(() => {
-      document.getElementById("respuesta").textContent = "Encargo guardado correctamente.";
-      agregarFilaTabla(datos);
-      document.getElementById("encargo-form").reset();
-    })
-    .catch(err => {
-      document.getElementById("respuesta").textContent = "Error al guardar el encargo.";
-      console.error(err);
-    });
+  agregarFilaTabla(datos);
+  guardarEnLocalStorage(datos);
+  document.getElementById("respuesta").textContent = "Encargo guardado correctamente.";
+  document.getElementById("encargo-form").reset();
 }
 
 document.getElementById("encargo-form").onsubmit = defaultSubmit;
@@ -61,10 +50,6 @@ function agregarFilaTabla(datos) {
 }
 
 function cargarFormularioParaEditar(fila, datos) {
-  // Remover resaltado previo
-  document.querySelectorAll("#tablaPedidos tbody tr").forEach(row => row.classList.remove("resaltado"));
-  fila.classList.add("resaltado");
-
   Object.entries(datos).forEach(([key, value]) => {
     document.getElementById(key).value = value;
   });
@@ -90,8 +75,6 @@ function cargarFormularioParaEditar(fila, datos) {
       <td><button class="btn-editar">Editar</button></td>
     `;
 
-    fila.classList.remove("resaltado");
-
     fila.querySelector(".btn-editar").addEventListener("click", () => {
       mostrarFormulario();
       cargarFormularioParaEditar(fila, nuevosDatos);
@@ -101,6 +84,8 @@ function cargarFormularioParaEditar(fila, datos) {
     boton.textContent = "Guardar encargo";
     document.getElementById("respuesta").textContent = "Pedido actualizado correctamente.";
     document.getElementById("encargo-form").onsubmit = defaultSubmit;
+
+    actualizarLocalStorage();
   };
 }
 
@@ -121,47 +106,48 @@ function mostrarFormulario() {
   cerrarBtn.classList.remove("oculto");
 }
 
-const pedidosEjemplo = [
-  {
-    diaMes: "2025-05-29",
-    tienda: "Martínez del Campo",
-    empleado: "Marta",
-    cliente: "Lucía González",
-    telefono: "612345678",
-    nombre: "Lucía",
-    direccion: "Calle Rosa 12",
-    estado: "Pendiente",
-    encargo: "Ramo de rosas rojas",
-    observaciones: "Entregar antes de las 14:00"
-  },
-  {
-    diaMes: "2025-06-01",
-    tienda: "Calle Vitoria",
-    empleado: "Carlos",
-    cliente: "Pedro López",
-    telefono: "698765432",
-    nombre: "Pedro",
-    direccion: "Avenida Madrid 45",
-    estado: "Entregado",
-    encargo: "Centro floral para cumpleaños",
-    observaciones: "Incluye tarjeta personalizada"
-  },
-  {
-    diaMes: "2025-06-02",
-    tienda: "Hospital Universitario",
-    empleado: "Ana",
-    cliente: "Laura Martín",
-    telefono: "677889900",
-    nombre: "Laura",
-    direccion: "Calle Sol 3",
-    estado: "En preparación",
-    encargo: "Decoración boda",
-    observaciones: "Confirmar colores con la novia"
-  }
-];
+function guardarEnLocalStorage(pedido) {
+  const pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
+  pedidos.push(pedido);
+  localStorage.setItem("pedidos", JSON.stringify(pedidos));
+}
+
+function actualizarLocalStorage() {
+  const filas = document.querySelectorAll("#tablaPedidos tbody tr");
+  const pedidos = Array.from(filas).map(fila => {
+    const celdas = fila.querySelectorAll("td");
+    return {
+      diaMes: formatearAISO(celdas[0].textContent),
+      tienda: celdas[1].textContent,
+      empleado: celdas[2].textContent,
+      cliente: celdas[3].textContent,
+      telefono: celdas[4].textContent,
+      nombre: celdas[5].textContent,
+      direccion: celdas[6].textContent,
+      estado: celdas[7].textContent,
+      encargo: celdas[8].textContent,
+      observaciones: celdas[9].textContent
+    };
+  });
+  localStorage.setItem("pedidos", JSON.stringify(pedidos));
+}
+
+function formatearAISO(fechaTexto) {
+  const partes = fechaTexto.split(" de ");
+  const meses = {
+    enero: "01", febrero: "02", marzo: "03", abril: "04",
+    mayo: "05", junio: "06", julio: "07", agosto: "08",
+    septiembre: "09", octubre: "10", noviembre: "11", diciembre: "12"
+  };
+  const dia = partes[0].padStart(2, "0");
+  const mes = meses[partes[1].toLowerCase()];
+  const anio = partes[2];
+  return `${anio}-${mes}-${dia}`;
+}
 
 window.addEventListener("DOMContentLoaded", () => {
-  pedidosEjemplo.forEach(agregarFilaTabla);
+  const pedidosGuardados = JSON.parse(localStorage.getItem("pedidos")) || [];
+  pedidosGuardados.forEach(agregarFilaTabla);
 });
 
 // Animación de panel lateral y alternancia de botones
