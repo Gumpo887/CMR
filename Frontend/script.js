@@ -1,7 +1,5 @@
-// Modo normal: envío de nuevo pedido
 function defaultSubmit(e) {
   e.preventDefault();
-
   const datos = getDatosFormulario();
 
   fetch("http://localhost:8080/api/encargos", {
@@ -21,26 +19,23 @@ function defaultSubmit(e) {
     });
 }
 
-// Asignar comportamiento inicial
 document.getElementById("encargo-form").onsubmit = defaultSubmit;
 
-// Obtener datos del formulario
 function getDatosFormulario() {
   return {
     diaMes: document.getElementById("diaMes").value,
     tienda: document.getElementById("tienda").value,
     empleado: document.getElementById("empleado").value,
     cliente: document.getElementById("cliente").value,
-    estado: document.getElementById("estado").value,
     telefono: document.getElementById("telefono").value,
     nombre: document.getElementById("nombre").value,
     direccion: document.getElementById("direccion").value,
+    estado: document.getElementById("estado").value,
     encargo: document.getElementById("encargo").value,
     observaciones: document.getElementById("observaciones").value,
   };
 }
 
-// Insertar fila y botón Editar
 function agregarFilaTabla(datos) {
   const tabla = document.querySelector("#tablaPedidos tbody");
   const fila = tabla.insertRow();
@@ -50,10 +45,10 @@ function agregarFilaTabla(datos) {
     <td>${datos.tienda}</td>
     <td>${datos.empleado}</td>
     <td>${datos.cliente}</td>
-    <td>${datos.estado}</td>
     <td>${datos.telefono}</td>
     <td>${datos.nombre}</td>
     <td>${datos.direccion}</td>
+    <td>${datos.estado}</td>
     <td>${datos.encargo}</td>
     <td>${datos.observaciones}</td>
     <td><button class="btn-editar">Editar</button></td>
@@ -64,7 +59,6 @@ function agregarFilaTabla(datos) {
   });
 }
 
-// Cargar pedido en formulario para editar
 function cargarFormularioParaEditar(fila, datos) {
   Object.entries(datos).forEach(([key, value]) => {
     document.getElementById(key).value = value;
@@ -82,10 +76,10 @@ function cargarFormularioParaEditar(fila, datos) {
       <td>${nuevosDatos.tienda}</td>
       <td>${nuevosDatos.empleado}</td>
       <td>${nuevosDatos.cliente}</td>
-      <td>${nuevosDatos.estado}</td>
       <td>${nuevosDatos.telefono}</td>
       <td>${nuevosDatos.nombre}</td>
       <td>${nuevosDatos.direccion}</td>
+      <td>${nuevosDatos.estado}</td>
       <td>${nuevosDatos.encargo}</td>
       <td>${nuevosDatos.observaciones}</td>
       <td><button class="btn-editar">Editar</button></td>
@@ -102,28 +96,70 @@ function cargarFormularioParaEditar(fila, datos) {
   };
 }
 
-// Mostrar la fecha en formato largo en español
 function formatearFecha(fechaISO) {
   const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
   const fecha = new Date(fechaISO);
   return fecha.toLocaleDateString('es-ES', opciones);
 }
 
-// Pedido de ejemplo
-const pedidoEjemplo = {
-  diaMes: "2025-05-29",
-  tienda: "Floristería Central",
-  empleado: "Marta",
-  cliente: "Lucía González",
-  estado: "Pendiente",
-  telefono: "612345678",
-  nombre: "Lucía",
-  direccion: "Calle Rosa 12",
-  encargo: "Ramo de rosas rojas",
-  observaciones: "Entregar antes de las 14:00"
-};
+const pedidosEjemplo = [
+  {
+    diaMes: "2025-05-29",
+    tienda: "Martínez del Campo",
+    empleado: "Marta",
+    cliente: "Lucía González",
+    telefono: "612345678",
+    nombre: "Lucía",
+    direccion: "Calle Rosa 12",
+    estado: "Pendiente",
+    encargo: "Ramo de rosas rojas",
+    observaciones: "Entregar antes de las 14:00"
+  },
+  {
+    diaMes: "2025-06-01",
+    tienda: "Calle Vitoria",
+    empleado: "Carlos",
+    cliente: "Pedro López",
+    telefono: "698765432",
+    nombre: "Pedro",
+    direccion: "Avenida Madrid 45",
+    estado: "Entregado",
+    encargo: "Centro floral para cumpleaños",
+    observaciones: "Incluye tarjeta personalizada"
+  },
+  {
+    diaMes: "2025-06-02",
+    tienda: "Hospital Universitario",
+    empleado: "Ana",
+    cliente: "Laura Martín",
+    telefono: "677889900",
+    nombre: "Laura",
+    direccion: "Calle Sol 3",
+    estado: "En preparación",
+    encargo: "Decoración boda",
+    observaciones: "Confirmar colores con la novia"
+  }
+];
 
-// Cargar ejemplo al iniciar
 window.addEventListener("DOMContentLoaded", () => {
-  agregarFilaTabla(pedidoEjemplo);
+  pedidosEjemplo.forEach(agregarFilaTabla);
+});
+
+// Animación de panel lateral y alternancia de botones
+const panelFormulario = document.getElementById("panel-formulario");
+const abrirBtn = document.getElementById("toggle-form");
+const cerrarBtn = document.getElementById("cerrar-formulario");
+
+abrirBtn.addEventListener("click", () => {
+  panelFormulario.classList.add("activa");
+  document.body.classList.add("formulario-activo");
+  abrirBtn.classList.add("oculto");
+  cerrarBtn.classList.remove("oculto");
+});
+
+cerrarBtn.addEventListener("click", () => {
+  panelFormulario.classList.remove("activa");
+  document.body.classList.remove("formulario-activo");
+  cerrarBtn.classList.add("oculto");
+  abrirBtn.classList.remove("oculto");
 });

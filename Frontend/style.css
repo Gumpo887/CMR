@@ -1,30 +1,8 @@
+/* Estilos base */
 body {
   font-family: 'Segoe UI', sans-serif;
   margin: 0;
   background: #f2f2f2;
-}
-
-.main-container {
-  display: flex;
-  justify-content: space-between;
-  gap: 2rem;
-  padding: 2rem;
-}
-
-.formulario, .tabla {
-  background: white;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-.formulario {
-  flex: 1;
-}
-
-.tabla {
-  flex: 2;
-  overflow-x: auto;
 }
 
 h1, h2 {
@@ -41,33 +19,20 @@ label {
   margin-bottom: 0.3rem;
 }
 
-input, textarea {
+input, textarea, select {
   width: 100%;
   padding: 0.6rem;
   border: 1px solid #ccc;
   border-radius: 6px;
-}
-
-button {
-  width: 100%;
-  padding: 0.8rem;
-  background: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 6px;
   font-size: 1rem;
-  cursor: pointer;
-  margin-top: 1rem;
 }
 
-button:hover {
-  background: #43a047;
-}
-
+/* TABLA DE PEDIDOS */
 table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.9rem;
+  min-width: 1000px;
 }
 
 th, td {
@@ -84,4 +49,139 @@ thead {
   text-align: center;
   margin-top: 1rem;
   color: #2e7d32;
+}
+
+/* BOTÓN GUARDAR */
+button {
+  width: 100%;
+  padding: 0.8rem;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+button:hover {
+  background: #43a047;
+}
+
+/* CONTENEDOR PRINCIPAL */
+.main-container {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  transition: margin-left 0.4s ease;
+  overflow-x: hidden;
+}
+
+body.formulario-activo .main-container {
+  margin-left: 420px;
+}
+
+body:not(.formulario-activo) .main-container {
+  margin-left: 0;
+}
+
+/* FORMULARIO DESLIZANTE */
+.formulario {
+  position: fixed;
+  top: 0;
+  left: -420px;
+  width: 400px;
+  height: 100%;
+  background: white;
+  padding: 2rem;
+  overflow-y: auto;
+  transition: left 0.4s ease, opacity 0.4s ease;
+  z-index: 1000;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.formulario.activa {
+  left: 0;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* TABLA */
+.tabla {
+  flex: 1;
+  overflow-x: auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  max-width: 100%;
+}
+
+.tabla table {
+  min-width: 1000px;
+}
+
+/* BOTONES FLOTANTES ABAJO A LA DERECHA */
+.botones-flotantes {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.boton-flotante.pequeño {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 1.3rem;
+  padding: 0;
+  background: #4caf50;
+  color: white;
+  border: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.boton-flotante.pequeño:hover {
+  background: #43a047;
+}
+
+.boton-flotante.oculto {
+  display: none;
+}
+
+/* Responsive para pantallas pequeñas */
+@media screen and (max-width: 768px) {
+  .main-container {
+    margin-left: 0;
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .formulario {
+    width: 100%;
+    left: -100%;
+  }
+
+  .formulario.activa {
+    left: 0;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .tabla {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .botones-flotantes {
+    right: 10px;
+    bottom: 10px;
+  }
 }
