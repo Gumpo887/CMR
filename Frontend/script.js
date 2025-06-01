@@ -55,11 +55,16 @@ function agregarFilaTabla(datos) {
   `;
 
   fila.querySelector(".btn-editar").addEventListener("click", () => {
+    mostrarFormulario();
     cargarFormularioParaEditar(fila, datos);
   });
 }
 
 function cargarFormularioParaEditar(fila, datos) {
+  // Remover resaltado previo
+  document.querySelectorAll("#tablaPedidos tbody tr").forEach(row => row.classList.remove("resaltado"));
+  fila.classList.add("resaltado");
+
   Object.entries(datos).forEach(([key, value]) => {
     document.getElementById(key).value = value;
   });
@@ -85,7 +90,10 @@ function cargarFormularioParaEditar(fila, datos) {
       <td><button class="btn-editar">Editar</button></td>
     `;
 
+    fila.classList.remove("resaltado");
+
     fila.querySelector(".btn-editar").addEventListener("click", () => {
+      mostrarFormulario();
       cargarFormularioParaEditar(fila, nuevosDatos);
     });
 
@@ -100,6 +108,17 @@ function formatearFecha(fechaISO) {
   const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
   const fecha = new Date(fechaISO);
   return fecha.toLocaleDateString('es-ES', opciones);
+}
+
+function mostrarFormulario() {
+  const panelFormulario = document.getElementById("panel-formulario");
+  const abrirBtn = document.getElementById("toggle-form");
+  const cerrarBtn = document.getElementById("cerrar-formulario");
+
+  panelFormulario.classList.add("activa");
+  document.body.classList.add("formulario-activo");
+  abrirBtn.classList.add("oculto");
+  cerrarBtn.classList.remove("oculto");
 }
 
 const pedidosEjemplo = [
@@ -150,12 +169,7 @@ const panelFormulario = document.getElementById("panel-formulario");
 const abrirBtn = document.getElementById("toggle-form");
 const cerrarBtn = document.getElementById("cerrar-formulario");
 
-abrirBtn.addEventListener("click", () => {
-  panelFormulario.classList.add("activa");
-  document.body.classList.add("formulario-activo");
-  abrirBtn.classList.add("oculto");
-  cerrarBtn.classList.remove("oculto");
-});
+abrirBtn.addEventListener("click", mostrarFormulario);
 
 cerrarBtn.addEventListener("click", () => {
   panelFormulario.classList.remove("activa");
