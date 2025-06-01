@@ -4,6 +4,7 @@ function defaultSubmit(e) {
 
   agregarFilaTabla(datos);
   guardarEnLocalStorage(datos);
+  enviarAlBackend(datos); // Preparado para posible backend
   document.getElementById("respuesta").textContent = "Encargo guardado correctamente.";
   document.getElementById("encargo-form").reset();
 }
@@ -143,6 +144,18 @@ function formatearAISO(fechaTexto) {
   const mes = meses[partes[1].toLowerCase()];
   const anio = partes[2];
   return `${anio}-${mes}-${dia}`;
+}
+
+function enviarAlBackend(pedido) {
+  // Esta función se puede habilitar cuando el backend esté listo
+  // fetch("http://localhost:8080/api/encargos", {
+  //   method: "POST",
+  //   headers: { "Content-Type": "application/json" },
+  //   body: JSON.stringify(pedido)
+  // })
+  //   .then(res => res.ok ? res.json() : Promise.reject("Error al enviar al backend"))
+  //   .then(data => console.log("Guardado en backend", data))
+  //   .catch(err => console.error("Fallo al guardar en backend", err));
 }
 
 window.addEventListener("DOMContentLoaded", () => {
