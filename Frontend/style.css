@@ -51,7 +51,12 @@ input, textarea, select {
   pointer-events: auto;
 }
 
-/* Form interno con scroll */
+.formulario h1 {
+  font-size: 1.4rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
 .formulario form {
   flex: 1;
   display: flex;
@@ -59,13 +64,6 @@ input, textarea, select {
   overflow-y: auto;
   padding: 2rem;
   gap: 1rem;
-}
-
-/* Título del formulario */
-.formulario h1 {
-  font-size: 1.4rem;
-  margin-top: 0;
-  margin-bottom: 1rem;
 }
 
 /* BOTÓN GUARDAR */
@@ -85,7 +83,7 @@ button:hover {
   background: #43a047;
 }
 
-/* Mensaje de confirmación */
+/* MENSAJE DE CONFIRMACIÓN */
 .mensaje-respuesta {
   text-align: center;
   margin-top: 1rem;
@@ -180,6 +178,29 @@ body:not(.formulario-activo) .main-container {
   display: none;
 }
 
+/* FILTROS FLOTANTES a la izquierda del botón ➕ */
+.filtros-flotantes {
+  position: fixed;
+  bottom: 20px;
+  right: 80px; /* espacio para que no se solape con el botón ➕ */
+  z-index: 1100;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  background: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.filtros-flotantes select {
+  padding: 0.4rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+  min-width: 100px;
+}
+
 /* Responsive */
 @media screen and (max-width: 768px) {
   .main-container {
@@ -212,5 +233,17 @@ body:not(.formulario-activo) .main-container {
   .botones-flotantes {
     right: 10px;
     bottom: 10px;
+  }
+
+  .filtros-flotantes {
+    flex-direction: column;
+    right: 70px;
+    bottom: 10px;
+    padding: 0.5rem;
+    gap: 0.3rem;
+  }
+
+  .filtros-flotantes select {
+    min-width: 130px;
   }
 }

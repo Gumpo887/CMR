@@ -7,10 +7,44 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- BOTONES flotantes en la esquina inferior derecha -->
+  <!-- BOTONES flotantes -->
   <div class="botones-flotantes">
     <button id="toggle-form" class="boton-flotante pequeño">➕</button>
     <button id="cerrar-formulario" class="boton-flotante pequeño oculto">❌</button>
+  </div>
+
+  <!-- FILTROS flotantes -->
+  <div class="filtros-flotantes">
+    <select id="filtroMes">
+      <option value="">Mes</option>
+      <option value="01">Enero</option>
+      <option value="02">Febrero</option>
+      <option value="03">Marzo</option>
+      <option value="04">Abril</option>
+      <option value="05">Mayo</option>
+      <option value="06">Junio</option>
+      <option value="07">Julio</option>
+      <option value="08">Agosto</option>
+      <option value="09">Septiembre</option>
+      <option value="10">Octubre</option>
+      <option value="11">Noviembre</option>
+      <option value="12">Diciembre</option>
+    </select>
+
+    <select id="filtroAnio">
+      <option value="">Año</option>
+      <option value="2024">2024</option>
+      <option value="2025">2025</option>
+    </select>
+
+    <select id="filtroTienda">
+      <option value="">Tienda</option>
+      <option>Martínez del Campo</option>
+      <option>Calle Vitoria</option>
+      <option>Hospital Universitario</option>
+      <option>Aranda</option>
+      <option>Centro de jardinería</option>
+    </select>
   </div>
 
   <div class="main-container">
@@ -73,9 +107,6 @@
     </div>
   </div>
 
-  
-
   <script src="script.js"></script>
-  
 </body>
 </html>
