@@ -7,7 +7,7 @@ body {
 
 h1, h2 {
   text-align: center;
-  font-size: 1.2rem;
+  margin-top: 0;
 }
 
 .form-group {
@@ -28,28 +28,44 @@ input, textarea, select {
   font-size: 1rem;
 }
 
-/* TABLA DE PEDIDOS */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-  min-width: 1000px;
+/* FORMULARIO DESLIZANTE */
+.formulario {
+  position: fixed;
+  top: 0;
+  left: -420px;
+  width: 400px;
+  height: 100vh;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  transition: left 0.4s ease, opacity 0.4s ease;
+  z-index: 1000;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  pointer-events: none;
 }
 
-th, td {
-  border: 1px solid #ddd;
-  padding: 0.5rem;
-  text-align: left;
+.formulario.activa {
+  left: 0;
+  opacity: 1;
+  pointer-events: auto;
 }
 
-thead {
-  background-color: #e0e0e0;
+/* Form interno con scroll */
+.formulario form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 2rem;
+  gap: 1rem;
 }
 
-.mensaje-respuesta {
-  text-align: center;
-  margin-top: 1rem;
-  color: #2e7d32;
+/* Título del formulario */
+.formulario h1 {
+  font-size: 1.4rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
 }
 
 /* BOTÓN GUARDAR */
@@ -69,6 +85,51 @@ button:hover {
   background: #43a047;
 }
 
+/* Mensaje de confirmación */
+.mensaje-respuesta {
+  text-align: center;
+  margin-top: 1rem;
+  color: #2e7d32;
+}
+
+/* TABLA DE PEDIDOS */
+.tabla {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 80vh;
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  max-width: 100%;
+}
+
+.tabla h2 {
+  font-size: 1.2rem;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.tabla table {
+  min-width: 1000px;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  background-color: #e0e0e0;
+  z-index: 10;
+}
+
 /* CONTENEDOR PRINCIPAL */
 .main-container {
   display: flex;
@@ -86,49 +147,7 @@ body:not(.formulario-activo) .main-container {
   margin-left: 0;
 }
 
-/* FORMULARIO DESLIZANTE */
-.formulario {
-  position: fixed;
-  top: 0;
-  left: -420px;
-  width: 400px;
-  height: 100vh;
-  background: white;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  overflow-y: auto;
-  transition: left 0.4s ease, opacity 0.4s ease;
-  z-index: 1000;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-  opacity: 0;
-  pointer-events: none;
-}
-
-
-.formulario.activa {
-  left: 0;
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* TABLA */
-.tabla {
-  flex: 1;
-  overflow-x: auto;
-  background: white;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  max-width: 100%;
-}
-
-.tabla table {
-  min-width: 1000px;
-}
-
-/* BOTONES FLOTANTES ABAJO A LA DERECHA */
+/* BOTONES FLOTANTES */
 .botones-flotantes {
   position: fixed;
   bottom: 20px;
@@ -161,7 +180,7 @@ body:not(.formulario-activo) .main-container {
   display: none;
 }
 
-/* Responsive para pantallas pequeñas */
+/* Responsive */
 @media screen and (max-width: 768px) {
   .main-container {
     margin-left: 0;
@@ -172,15 +191,17 @@ body:not(.formulario-activo) .main-container {
   .formulario {
     width: 100%;
     left: -100%;
-    height: 100vh;           /* Altura total en móvil */
-    max-height: 100vh;
-    overflow-y: auto;        /* Scroll en móvil también */
+    height: 100vh;
   }
 
   .formulario.activa {
     left: 0;
     opacity: 1;
     pointer-events: auto;
+  }
+
+  .formulario form {
+    padding: 1.5rem;
   }
 
   .tabla {
