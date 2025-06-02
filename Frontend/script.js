@@ -1,11 +1,13 @@
 function defaultSubmit(e) {
   e.preventDefault();
   const datos = getDatosFormulario();
+  datos.id = Date.now(); // ID único
 
   agregarFilaTabla(datos);
   guardarEnLocalStorage(datos);
   actualizarOpcionesFiltros();
-  document.getElementById("respuesta").textContent = "Encargo guardado correctamente.";
+
+  mostrarMensaje("Encargo guardado correctamente.");
   document.getElementById("encargo-form").reset();
 }
 
@@ -26,11 +28,8 @@ function getDatosFormulario() {
   };
 }
 
-function agregarFilaTabla(datos) {
-  const tabla = document.querySelector("#tablaPedidos tbody");
-  const fila = tabla.insertRow();
-
-  fila.innerHTML = `
+function crearFilaHTML(datos) {
+  return `
     <td>${formatearFecha(datos.diaMes)}</td>
     <td>${datos.tienda}</td>
     <td>${datos.empleado}</td>
@@ -43,6 +42,13 @@ function agregarFilaTabla(datos) {
     <td>${datos.observaciones}</td>
     <td><button class="btn-editar">Editar</button></td>
   `;
+}
+
+function agregarFilaTabla(datos) {
+  const tabla = document.querySelector("#tablaPedidos tbody");
+  const fila = tabla.insertRow();
+  fila.setAttribute("data-id", datos.id);
+  fila.innerHTML = crearFilaHTML(datos);
 
   fila.querySelector(".btn-editar").addEventListener("click", () => {
     mostrarFormulario();
@@ -52,7 +58,9 @@ function agregarFilaTabla(datos) {
 
 function cargarFormularioParaEditar(fila, datos) {
   Object.entries(datos).forEach(([key, value]) => {
-    document.getElementById(key).value = value;
+    if (document.getElementById(key)) {
+      document.getElementById(key).value = value;
+    }
   });
 
   const boton = document.querySelector("#encargo-form button");
@@ -61,20 +69,9 @@ function cargarFormularioParaEditar(fila, datos) {
   document.getElementById("encargo-form").onsubmit = function (e) {
     e.preventDefault();
     const nuevosDatos = getDatosFormulario();
+    nuevosDatos.id = datos.id;
 
-    fila.innerHTML = `
-      <td>${formatearFecha(nuevosDatos.diaMes)}</td>
-      <td>${nuevosDatos.tienda}</td>
-      <td>${nuevosDatos.empleado}</td>
-      <td>${nuevosDatos.cliente}</td>
-      <td>${nuevosDatos.telefono}</td>
-      <td>${nuevosDatos.nombre}</td>
-      <td>${nuevosDatos.direccion}</td>
-      <td>${nuevosDatos.estado}</td>
-      <td>${nuevosDatos.encargo}</td>
-      <td>${nuevosDatos.observaciones}</td>
-      <td><button class="btn-editar">Editar</button></td>
-    `;
+    fila.innerHTML = crearFilaHTML(nuevosDatos);
 
     fila.querySelector(".btn-editar").addEventListener("click", () => {
       mostrarFormulario();
@@ -83,16 +80,17 @@ function cargarFormularioParaEditar(fila, datos) {
 
     document.getElementById("encargo-form").reset();
     boton.textContent = "Guardar encargo";
-    document.getElementById("respuesta").textContent = "Pedido actualizado correctamente.";
     document.getElementById("encargo-form").onsubmit = defaultSubmit;
 
     actualizarLocalStorage();
     actualizarOpcionesFiltros();
+    mostrarMensaje("Pedido actualizado correctamente.");
   };
 }
 
 function formatearFecha(fechaISO) {
   const fecha = new Date(fechaISO);
+  if (isNaN(fecha)) return "";
   const dia = String(fecha.getDate()).padStart(2, '0');
   const mes = String(fecha.getMonth() + 1).padStart(2, '0');
   const anio = fecha.getFullYear();
@@ -110,12 +108,13 @@ function nombreMesDesdeNumero(numeroMes) {
 
 function formatearAISO(fechaTexto) {
   const partes = fechaTexto.split(" de ");
+  if (partes.length !== 3) return "";
   const dia = partes[0].padStart(2, "0");
-  const mes = Object.entries({
+  const mes = {
     enero: "01", febrero: "02", marzo: "03", abril: "04",
     mayo: "05", junio: "06", julio: "07", agosto: "08",
     septiembre: "09", octubre: "10", noviembre: "11", diciembre: "12"
-  }).find(([nombre]) => nombre === partes[1])[1];
+  }[partes[1]];
   const anio = partes[2];
   return `${anio}-${mes}-${dia}`;
 }
@@ -131,6 +130,22 @@ function mostrarFormulario() {
   cerrarBtn.classList.remove("oculto");
 }
 
+function ocultarFormulario() {
+  const panelFormulario = document.getElementById("panel-formulario");
+  const abrirBtn = document.getElementById("toggle-form");
+  const cerrarBtn = document.getElementById("cerrar-formulario");
+
+  panelFormulario.classList.remove("activa");
+  document.body.classList.remove("formulario-activo");
+  cerrarBtn.classList.add("oculto");
+  abrirBtn.classList.remove("oculto");
+
+  // Restaurar botón y evento
+  document.querySelector("#encargo-form button").textContent = "Guardar encargo";
+  document.getElementById("encargo-form").onsubmit = defaultSubmit;
+  document.getElementById("encargo-form").reset();
+}
+
 function guardarEnLocalStorage(pedido) {
   const pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
   pedidos.push(pedido);
@@ -142,6 +157,7 @@ function actualizarLocalStorage() {
   const pedidos = Array.from(filas).map(fila => {
     const celdas = fila.querySelectorAll("td");
     return {
+      id: parseInt(fila.getAttribute("data-id")),
       diaMes: formatearAISO(celdas[0].textContent),
       tienda: celdas[1].textContent,
       empleado: celdas[2].textContent,
@@ -157,26 +173,21 @@ function actualizarLocalStorage() {
   localStorage.setItem("pedidos", JSON.stringify(pedidos));
 }
 
+function mostrarMensaje(mensaje) {
+  const respuesta = document.getElementById("respuesta");
+  respuesta.textContent = mensaje;
+  setTimeout(() => respuesta.textContent = "", 3000);
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   const pedidosGuardados = JSON.parse(localStorage.getItem("pedidos")) || [];
   pedidosGuardados.forEach(agregarFilaTabla);
   actualizarOpcionesFiltros();
 });
 
-// Alternancia de botones
-const panelFormulario = document.getElementById("panel-formulario");
-const abrirBtn = document.getElementById("toggle-form");
-const cerrarBtn = document.getElementById("cerrar-formulario");
+document.getElementById("toggle-form").addEventListener("click", mostrarFormulario);
+document.getElementById("cerrar-formulario").addEventListener("click", ocultarFormulario);
 
-abrirBtn.addEventListener("click", mostrarFormulario);
-cerrarBtn.addEventListener("click", () => {
-  panelFormulario.classList.remove("activa");
-  document.body.classList.remove("formulario-activo");
-  cerrarBtn.classList.add("oculto");
-  abrirBtn.classList.remove("oculto");
-});
-
-// Filtros
 document.getElementById("filtroMes").addEventListener("change", aplicarFiltros);
 document.getElementById("filtroAnio").addEventListener("change", aplicarFiltros);
 document.getElementById("filtroTienda").addEventListener("change", aplicarFiltros);
@@ -189,7 +200,7 @@ function aplicarFiltros() {
   const filas = document.querySelectorAll("#tablaPedidos tbody tr");
 
   filas.forEach(fila => {
-    const fechaTexto = fila.cells[0].textContent; // ej: 02 de junio de 2025
+    const fechaTexto = fila.cells[0].textContent;
     const tiendaTexto = fila.cells[1].textContent;
 
     const partesFecha = fechaTexto.split(" de ");
@@ -213,11 +224,11 @@ function actualizarOpcionesFiltros() {
 
   filas.forEach(fila => {
     const partesFecha = fila.cells[0].textContent.split(" de ");
-    const mes = Object.entries({
+    const mes = {
       enero: "01", febrero: "02", marzo: "03", abril: "04",
       mayo: "05", junio: "06", julio: "07", agosto: "08",
       septiembre: "09", octubre: "10", noviembre: "11", diciembre: "12"
-    }).find(([nombre]) => nombre === partesFecha[1])[1];
+    }[partesFecha[1]];
 
     const anio = partesFecha[2];
     const tienda = fila.cells[1].textContent;
