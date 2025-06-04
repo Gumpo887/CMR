@@ -9,8 +9,8 @@
 <body>
   <!-- BOTONES flotantes -->
   <div class="botones-flotantes">
-    <button id="toggle-form" class="boton-flotante pequeño">➕</button>
-    <button id="cerrar-formulario" class="boton-flotante pequeño oculto">❌</button>
+    <button id="toggle-form" class="boton-flotante pequeño" title="Nuevo encargo">➕</button>
+    <button id="cerrar-formulario" class="boton-flotante pequeño oculto" title="Cerrar formulario">❌</button>
   </div>
 
   <!-- FILTROS flotantes -->
@@ -84,26 +84,27 @@
     </div>
 
     <!-- TABLA DE PEDIDOS -->
-    <div class="tabla">
-      <table id="tablaPedidos">
-        <thead>
-          <tr>
-            <th>Fecha</th>
-            <th>Tienda</th>
-            <th>Empleado</th>
-            <th>Cliente</th>
-            <th>Teléfono</th>
-            <th>Nombre</th>
-            <th>Dirección</th>
-            <th>Estado</th>
-            <th>Encargo</th>
-            <th>Observaciones</th>
-            <th>Acción</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+  <div class="tabla">
+    <table id="tablaPedidos">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Tienda</th>
+          <th>Empleado</th>
+          <th>Cliente</th>
+          <th>Teléfono</th>
+          <th>Nombre</th>
+          <th>Dirección</th>
+          <th>Estado</th>
+          <th>Encargo</th>
+          <th>Observaciones</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Las filas se insertan dinámicamente con JavaScript -->
+      </tbody>
+    </table>
   </div>
 
   <script src="script.js"></script>

@@ -40,7 +40,15 @@ function crearFilaHTML(datos) {
     <td>${datos.estado}</td>
     <td>${datos.encargo}</td>
     <td>${datos.observaciones}</td>
-    <td><button class="btn-editar">Editar</button></td>
+    <td>
+      <div class="dropdown">
+        <button class="dropdown-btn">⋮</button>
+        <div class="dropdown-menu">
+          <button class="editar">✏️ Editar</button>
+          <button class="eliminar">🗑️ Eliminar</button>
+        </div>
+      </div>
+    </td>
   `;
 }
 
@@ -50,17 +58,37 @@ function agregarFilaTabla(datos) {
   fila.setAttribute("data-id", datos.id);
   fila.innerHTML = crearFilaHTML(datos);
 
-  fila.querySelector(".btn-editar").addEventListener("click", () => {
+  const dropdownBtn = fila.querySelector(".dropdown-btn");
+  const editarBtn = fila.querySelector(".editar");
+  const eliminarBtn = fila.querySelector(".eliminar");
+
+  dropdownBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    document.querySelectorAll(".dropdown").forEach(d => d.classList.remove("show"));
+    dropdownBtn.closest(".dropdown").classList.toggle("show");
+  });
+
+  editarBtn.addEventListener("click", () => {
     mostrarFormulario();
     cargarFormularioParaEditar(fila, datos);
+    fila.querySelector(".dropdown").classList.remove("show");
+  });
+
+  eliminarBtn.addEventListener("click", () => {
+    const confirmar = confirm(`¿Eliminar el pedido de ${datos.cliente} en ${datos.tienda}?`);
+    if (confirmar) {
+      fila.remove();
+      actualizarLocalStorage();
+      actualizarOpcionesFiltros();
+      mostrarMensaje("Pedido eliminado.");
+    }
   });
 }
 
 function cargarFormularioParaEditar(fila, datos) {
   Object.entries(datos).forEach(([key, value]) => {
-    if (document.getElementById(key)) {
-      document.getElementById(key).value = value;
-    }
+    const input = document.getElementById(key);
+    if (input) input.value = value;
   });
 
   const boton = document.querySelector("#encargo-form button");
@@ -72,11 +100,7 @@ function cargarFormularioParaEditar(fila, datos) {
     nuevosDatos.id = datos.id;
 
     fila.innerHTML = crearFilaHTML(nuevosDatos);
-
-    fila.querySelector(".btn-editar").addEventListener("click", () => {
-      mostrarFormulario();
-      cargarFormularioParaEditar(fila, nuevosDatos);
-    });
+    agregarEventosDesplegable(fila, nuevosDatos);
 
     document.getElementById("encargo-form").reset();
     boton.textContent = "Guardar encargo";
@@ -86,6 +110,34 @@ function cargarFormularioParaEditar(fila, datos) {
     actualizarOpcionesFiltros();
     mostrarMensaje("Pedido actualizado correctamente.");
   };
+}
+
+function agregarEventosDesplegable(fila, datos) {
+  const dropdownBtn = fila.querySelector(".dropdown-btn");
+  const editarBtn = fila.querySelector(".editar");
+  const eliminarBtn = fila.querySelector(".eliminar");
+
+  dropdownBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    document.querySelectorAll(".dropdown").forEach(d => d.classList.remove("show"));
+    dropdownBtn.closest(".dropdown").classList.toggle("show");
+  });
+
+  editarBtn.addEventListener("click", () => {
+    mostrarFormulario();
+    cargarFormularioParaEditar(fila, datos);
+    fila.querySelector(".dropdown").classList.remove("show");
+  });
+
+  eliminarBtn.addEventListener("click", () => {
+    const confirmar = confirm(`¿Eliminar el pedido de ${datos.cliente} en ${datos.tienda}?`);
+    if (confirmar) {
+      fila.remove();
+      actualizarLocalStorage();
+      actualizarOpcionesFiltros();
+      mostrarMensaje("Pedido eliminado.");
+    }
+  });
 }
 
 function formatearFecha(fechaISO) {
@@ -120,27 +172,17 @@ function formatearAISO(fechaTexto) {
 }
 
 function mostrarFormulario() {
-  const panelFormulario = document.getElementById("panel-formulario");
-  const abrirBtn = document.getElementById("toggle-form");
-  const cerrarBtn = document.getElementById("cerrar-formulario");
-
-  panelFormulario.classList.add("activa");
+  document.getElementById("panel-formulario").classList.add("activa");
   document.body.classList.add("formulario-activo");
-  abrirBtn.classList.add("oculto");
-  cerrarBtn.classList.remove("oculto");
+  document.getElementById("toggle-form").classList.add("oculto");
+  document.getElementById("cerrar-formulario").classList.remove("oculto");
 }
 
 function ocultarFormulario() {
-  const panelFormulario = document.getElementById("panel-formulario");
-  const abrirBtn = document.getElementById("toggle-form");
-  const cerrarBtn = document.getElementById("cerrar-formulario");
-
-  panelFormulario.classList.remove("activa");
+  document.getElementById("panel-formulario").classList.remove("activa");
   document.body.classList.remove("formulario-activo");
-  cerrarBtn.classList.add("oculto");
-  abrirBtn.classList.remove("oculto");
-
-  // Restaurar botón y evento
+  document.getElementById("cerrar-formulario").classList.add("oculto");
+  document.getElementById("toggle-form").classList.remove("oculto");
   document.querySelector("#encargo-form button").textContent = "Guardar encargo";
   document.getElementById("encargo-form").onsubmit = defaultSubmit;
   document.getElementById("encargo-form").reset();
@@ -202,7 +244,6 @@ function aplicarFiltros() {
   filas.forEach(fila => {
     const fechaTexto = fila.cells[0].textContent;
     const tiendaTexto = fila.cells[1].textContent;
-
     const partesFecha = fechaTexto.split(" de ");
     const mesPedido = partesFecha[1];
     const anioPedido = partesFecha[2];
@@ -259,3 +300,12 @@ function actualizarSelect(id, valores) {
     select.value = valorActual;
   }
 }
+
+// Cerrar menús desplegables al hacer clic fuera
+document.addEventListener("click", function (e) {
+  document.querySelectorAll(".dropdown").forEach(drop => {
+    if (!drop.contains(e.target)) {
+      drop.classList.remove("show");
+    }
+  });
+});
