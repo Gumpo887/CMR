@@ -53,7 +53,7 @@ frontend/
 ## 🧩 Mejoras sugeridas
 
 - 🔄 Guardar pedidos en `localStorage` para conservarlos al recargar.
-- ❌ Botón "Eliminar" para quitar filas de la tabla.
+- ❌ Ya hay un botón "Eliminar" para quitar filas de la tabla.
 - 📤 Conexión a un backend con API REST para persistencia en base de datos o Excel.
 - 🔍 Filtro/buscador por cliente, estado o fecha.
 
