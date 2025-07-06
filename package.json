@@ -1,0 +1,13 @@
+{
+  "name": "crm",
+  "version": "1.0.0",
+  "description": "Esta es una aplicación web sencilla desarrollada con **HTML, CSS y JavaScript**, pensada para gestionar encargos en una floristería. Permite registrar pedidos con información detallada, visualizarlos en una tabla y editarlos desde la interfaz.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node tests/dateFunctions.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
