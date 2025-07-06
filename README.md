@@ -25,7 +25,7 @@ Esta es una aplicación web sencilla desarrollada con **HTML, CSS y JavaScript**
 
 ## 🗂️ Estructura del proyecto
 
-frontend/
+Frontend/
 ├── index.html # Interfaz principal
 ├── style.css # Estilos visuales
 └── script.js # Lógica e interacción
